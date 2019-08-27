@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineResource
+metadata:
+  name: order-command-ms-image
+spec:
+  type: image
+  params:
+  - name: url
+    value: docker-registry.default.svc:5000/eda-pipelines-sandbox/order-command-ms

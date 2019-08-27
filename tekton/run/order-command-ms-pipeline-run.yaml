@@ -1,0 +1,27 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  generateName: order-command-ms-pr-
+spec:
+  pipelineRef:
+    name: order-command-ms-pipeline
+  resources:
+    - name: git-source
+      resourceRef:
+        name: order-command-ms-git
+    - name: image
+      resourceRef:
+        name: order-command-ms-image
+  params:
+    - name: "pathToContext"
+      value: "./order-command-ms"
+    - name: "pathToDockerFile"
+      value: "Dockerfile"
+    - name: "imageUrl"
+      value: "docker-registry.default.svc:5000/eda-pipelines-sandbox/order-command-ms"
+    - name: "imageTag"
+      value: "latest"
+    - name: "kanikoLoggingLevel"
+      value: "debug"
+  trigger:
+    type: manual
