@@ -6,6 +6,6 @@ spec:
   type: git
   params:
     - name: revision
-      value: master
+      value: tekton-dev
     - name: url
       value: https://github.com/osowski/refarch-kc-order-ms.git

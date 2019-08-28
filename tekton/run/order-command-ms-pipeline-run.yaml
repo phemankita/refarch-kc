@@ -16,7 +16,7 @@ spec:
     - name: "pathToContext"
       value: "./order-command-ms"
     - name: "pathToDockerFile"
-      value: "Dockerfile"
+      value: "Dockerfile.multistage"
     - name: "imageUrl"
       value: "docker-registry.default.svc:5000/eda-pipelines-sandbox/order-command-ms"
     - name: "imageTag"
@@ -25,3 +25,4 @@ spec:
       value: "debug"
   trigger:
     type: manual
+  serviceAccount: tekton-eda-sa

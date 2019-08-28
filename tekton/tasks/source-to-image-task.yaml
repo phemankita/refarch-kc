@@ -37,3 +37,8 @@ spec:
         - --destination=$(inputs.params.imageUrl):$(inputs.params.imageTag)
         - --context=/workspace/git-source/$(inputs.params.pathToContext)
         - --verbosity=$(inputs.params.loggingLevel)
+        - --insecure
+        - --skip-tls-verify
+      env:
+      - name: DOCKER_CONFIG
+        value: /builder/home/.docker
