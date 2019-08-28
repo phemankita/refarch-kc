@@ -27,6 +27,26 @@ spec:
       type: string
       description: Logging level to apply to Kaniko build container
       default: info
+    - name: chartName
+      description: The name of the chart
+      type: string
+      default: ordercommandms
+    - name: pathToChart
+      description: The path to the chart within the workspace
+      type: string
+      default: order-command-ms/chart/ordercommandms
+    - name: targetNamespace
+      default: default
+      type: string
+    - name: targetEnvironment
+      default: ICP
+      type: string
+    - name: releaseName
+      type: string
+      default: order-command-ms
+    - name: kafkaServers
+      type: string
+      default: localhost:9092
   tasks:
   #- name: buildah
   #  taskRef:
@@ -44,6 +64,9 @@ spec:
   - name: source-to-image
     taskRef:
       name: source-to-image
+    #FOR TESTING PURPOSES ONLY - SKIP
+    runAfter:
+      - deploy-to-cluster
     params:
       - name: pathToContext
         value: "$(params.pathToContext)"
@@ -55,6 +78,32 @@ spec:
         value: "$(params.imageTag)"
       - name: loggingLevel
         value: "$(params.kanikoLoggingLevel)"
+    resources:
+      inputs:
+        - name: git-source
+          resource: git-source
+  - name: deploy-to-cluster
+    taskRef:
+      name: deploy-helm-template-via-kubectl
+    #runAfter:
+    #  - source-to-image
+    params:
+      - name: chartName
+        value: "$(params.chartName)"
+      - name: pathToChart
+        value: "$(params.pathToChart)"
+      - name: imageUrl
+        value: "$(params.imageUrl)"
+      - name: imageTag
+        value: "$(params.imageTag)"
+      - name: targetEnvironment
+        value: "$(params.targetEnvironment)"
+      - name: targetNamespace
+        value: "$(params.targetNamespace)"
+      - name: releaseName
+        value: "$(params.releaseName)"
+      - name: kafkaServers
+        value: "$(params.kafkaServers)"
     resources:
       inputs:
         - name: git-source

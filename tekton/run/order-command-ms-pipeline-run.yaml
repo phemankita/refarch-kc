@@ -22,7 +22,16 @@ spec:
     - name: "imageTag"
       value: "latest"
     - name: "kanikoLoggingLevel"
-      value: "debug"
+      value: "info"
+    - name: "kafkaServers"
+      #value: "broker-3-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093, broker-2-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093, broker-1-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093, broker-5-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093, broker-0-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093, broker-4-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093"
+      value: "broker-3-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093,broker-2-j7fxtxtp5fs84205.kafka.svc01.us-south.eventstreams.cloud.ibm.com:9093"
+    - name: "targetEnvironment"
+      value: "ICP"
+    - name: "targetNamespace"
+      value: "eda-pipelines-sandbox"
+    - name: "releaseName"
+      value: "order-command-ms"
   trigger:
     type: manual
   serviceAccount: tekton-eda-sa

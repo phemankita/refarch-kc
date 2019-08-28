@@ -1,0 +1,80 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: deploy-helm-template-via-kubectl
+spec:
+  inputs:
+    resources:
+      - name: git-source
+        type: git
+    params:
+      - name: chartName
+        description: The name of the chart
+        type: string
+      - name: pathToChart
+        description: Path to Helm Chart inside the repository
+        default: "."
+        type: string
+      - name: imageUrl
+        description: Url of image repository
+        type: string
+      - name: imageTag
+        description: Tag to apply to the built image
+        default: "latest"
+        type: string
+      - name: targetNamespace
+        description: Targeted Kubernetes Namespace for deployment
+        default: "default"
+        type: string
+      - name: targetEnvironment
+        description: Targeted Kubernetes platform for deployment (ICP, IKS, MINIKUBE)
+        default: "ICP"
+        type: string
+      - name: releaseName
+        description: Helm Release Name
+        type: string
+      - name: kafkaServers
+        description: Comma-separated list of Kafka endpoints to connect to. Can be 'localhost:9092' or more.
+        type: string
+  steps:
+    - name: prep-workspace
+      image: alpine
+      command: ["mkdir"]
+      args:
+        - "-p"
+        - "/workspace/helm"
+    - name: test-params
+      image: alpine
+      command: ["echo"]
+      args:
+        - "$(inputs.params.kafkaServers)"
+    - name: helm-template
+      image: alpine/helm
+      args:
+        - template
+        - --debug
+        - --namespace=$(inputs.params.targetNamespace)
+        - "/workspace/git-source/$(inputs.params.pathToChart)"
+        - --name
+        - $(inputs.params.releaseName)
+        - --set
+        - image.repository=$(inputs.params.imageUrl)
+        - --set
+        - image.tag=latest
+        - --set
+        - image.pullPolicy=Always
+        - --set
+        - eventstreams.brokers={$(inputs.params.kafkaServers)}
+        - --set
+        - eventstreams.env=$(inputs.params.targetEnvironment)
+        - --set
+        - generatedBindings.enabled=false
+        - --output-dir
+        - /workspace/helm
+    - name: run-kubectl
+      image: lachlanevenson/k8s-kubectl
+      command: ["kubectl"]
+      args:
+        - "apply"
+        - "-f"
+        - "/workspace/helm/$(inputs.params.chartName)/templates"
