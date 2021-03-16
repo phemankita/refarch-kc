@@ -22,15 +22,14 @@ class KafkaConsumer:
                 'enable.auto.commit': self.kafka_auto_commit,
         }
         if (self.kafka_env != 'LOCAL'):
-            options['security.protocol'] = 'SASL_SSL'
-            options['sasl.mechanisms'] = 'PLAIN'
             options['sasl.username'] = self.kafka_user
             options['sasl.password'] = self.kafka_password
-        if (self.kafka_env == 'OCP'):
-            options['sasl.mechanisms'] = 'SCRAM-SHA-512'
+            options['sasl.mechanisms'] = os.environ['SASL_MECHANISM']
+            options['security.protocol'] = os.environ['SECURITY_PROTOCOL']
+        if (os.environ['PEM_CERT']!=""):
             options['ssl.ca.location'] = os.environ['PEM_CERT']
 
-        # Printing out producer config for debugging purposes        
+        # Printing out producer config for debugging purposes
         print("[KafkaConsumer] - This is the configuration for the consumer:")
         print("[KafkaConsumer] - -------------------------------------------")
         print('[KafkaConsumer] - Bootstrap Server:  {}'.format(options['bootstrap.servers']))
@@ -44,14 +43,14 @@ class KafkaConsumer:
             print('[KafkaConsumer] - SASL Mechanism:    {}'.format(options['sasl.mechanisms']))
             print('[KafkaConsumer] - SASL Username:     {}'.format(options['sasl.username']))
             print('[KafkaConsumer] - SASL Password:     {}'.format(obfuscated_password))
-            if (self.kafka_env == 'OCP'): 
+            if (options['ssl.ca.location']!=""):
                 print('[KafkaConsumer] - SSL CA Location:   {}'.format(options['ssl.ca.location']))
         print("[KafkaConsumer] - -------------------------------------------")
 
         # Create the consumer
         self.consumer = Consumer(options)
         self.consumer.subscribe([self.topic_name])
-    
+
     # Prints out and returns the decoded events received by the consumer
     def traceResponse(self, msg):
         msgStr = msg.value().decode('utf-8')
@@ -121,6 +120,6 @@ class KafkaConsumer:
                     gotIt= True
                 continue
             self.traceResponse(msg)
-    
+
     def close(self):
         self.consumer.close()

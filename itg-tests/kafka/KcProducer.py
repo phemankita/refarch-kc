@@ -16,15 +16,14 @@ class KafkaProducer:
         }
         # We need this test as local kafka does not expect SSL protocol.
         if (self.kafka_env != 'LOCAL'):
-            options['security.protocol'] = 'SASL_SSL'
-            options['sasl.mechanisms'] = 'PLAIN'
             options['sasl.username'] = self.kafka_user
             options['sasl.password'] = self.kafka_password
-        if (self.kafka_env == 'OCP'):
-            options['sasl.mechanisms'] = 'SCRAM-SHA-512'
+            options['sasl.mechanisms'] = os.environ['SASL_MECHANISM']
+            options['security.protocol'] = os.environ['SECURITY_PROTOCOL']
+        if (os.environ['PEM_CERT']!=""):
             options['ssl.ca.location'] = os.environ['PEM_CERT']
-        
-        # Printing out producer config for debugging purposes        
+
+        # Printing out producer config for debugging purposes
         print("[KafkaConsumer] - This is the configuration for the consumer:")
         print("[KafkaConsumer] - -------------------------------------------")
         print('[KafkaConsumer] - Bootstrap Server:  {}'.format(options['bootstrap.servers']))
@@ -38,7 +37,7 @@ class KafkaProducer:
             print('[KafkaConsumer] - SASL Mechanism:    {}'.format(options['sasl.mechanisms']))
             print('[KafkaConsumer] - SASL Username:     {}'.format(options['sasl.username']))
             print('[KafkaConsumer] - SASL Password:     {}'.format(obfuscated_password))
-            if (self.kafka_env == 'OCP'): 
+            if (options['ssl.ca.location']!=""):
                 print('[KafkaConsumer] - SSL CA Location:   {}'.format(options['ssl.ca.location']))
         print("[KafkaConsumer] - -------------------------------------------")
 
