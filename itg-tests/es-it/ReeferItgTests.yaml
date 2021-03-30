@@ -9,7 +9,7 @@ spec:
     spec:
       containers:
       - name: ibmcase-python
-        image: ibmcase/kcontainer-python:itgtests
+        image: quay.io/ibmcase/kcontainer-python:itgtests
         imagePullPolicy: Always
         command:
         - /bin/bash
