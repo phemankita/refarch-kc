@@ -15,19 +15,6 @@ spec:
         - /bin/bash
         - -c
         - |
-              # TODO REMOVE THESE CHECKS AND ONLY VALIDATE AGAINST ENV VARS THAT ARE PROVIDED
-              # Understand what environment we are executing against
-              if [ -z "$KAFKA_USER" ]; then
-                KAFKA_ENV="LOCAL"
-              elif [ "$KAFKA_USER" == "token" ]; then
-                KAFKA_ENV="IBMCLOUD"
-              else
-                KAFKA_ENV="OCP"
-              fi
-
-              # Export KAFKA_ENV since it is used by the test cases
-              export KAFKA_ENV=${KAFKA_ENV}
-
               # Obfuscate KAFKA_PASSWORD
               if [ "`echo -n ${KAFKA_PASSWORD} | wc -c`" -gt 3 ]; then
                 FIRST_CH=${KAFKA_PASSWORD:0:1}
@@ -43,9 +30,10 @@ spec:
               echo
               echo "Executing integrations tests from branch $BRANCH of $GITHUB_REPO"
               echo "Kafka Brokers: $KAFKA_BROKERS"
+              echo "Kafka Security protocol: $SECURITY_PROTOCOL"
+              echo "Kafka SASL mechanism: $SASL_MECHANISM"
               echo "Kafka user: $KAFKA_USER"
               echo "Kafka password: $OBFUSCATED_PASSWORD"
-              echo "Kafka Env: $KAFKA_ENV"
               echo "Orders topic name: $ITGTESTS_ORDERS_TOPIC"
               echo "Order Command topic name: $ITGTESTS_ORDER_COMMANDS_TOPIC"
               echo "Containers topic name: $ITGTESTS_CONTAINERS_TOPIC"
@@ -58,18 +46,27 @@ spec:
                 exit 1
               fi
 
-              if [ "$KAFKA_ENV" != "LOCAL" -a -z "$KAFKA_PASSWORD" ]; then
-                echo "[ERROR] - KAFKA_PASSWORD environment variable must be set."
-                exit 1
+              # Check that a Kafka user and password are provided if there is authentication set up
+              if [ "$SECURITY_PROTOCOL" == "SASL_PLAINTEXT" ] || [ "$SECURITY_PROTOCOL" == "SASL_SSL" ]; then
+                if [ -z "$KAFKA_USER" ]; then
+                  echo "[ERROR] - A Kafka user was not provided."
+                  exit 1
+                fi
+                if [ -z "$KAFKA_PASSWORD" ]; then
+                  echo "[ERROR] - A Kafka password was not provided."
+                  exit 1
+                fi
               fi
 
-              # Check that if we are using IBM Event Streams on prem, we are providing the PEM certificate to connect to it.
-              if [ "$KAFKA_ENV" == "OCP" ]  && [ ! -f "$PEM_CERT" ]; then
-              # TODO Change this check to if security.protocol = SASL_SSL
-                echo "[ERROR] - The PEM certificate to connect to IBM Event Streams on premise could not be found."
-                echo "[ERROR] - Please make sure you have created the kubernetes secret with the PEM certificate and"
-                echo "[ERROR] - you have uncommented the mount of such secret in the integration tests yaml file."
-                exit 1
+              # Ideally, we would check here if SECURITY_PROTOCOL is SSL or SASL_SSL which are the two security protocols that use SSL certs.
+              # However, IBM Event Streams on IBM Cloud uses SASL_SSL but there is no need for a certificate.
+              # Hence, we can only warn that
+              if [ "$SECURITY_PROTOCOL" == "SSL" ] || [ "$SECURITY_PROTOCOL" == "SASL_SSL" ]; then
+                if [ ! -f "$PEM_CERT" ]; then
+                  echo "[WARNING] - A PEM certificate could not be found. This might be necessary to establish the appropriate secured communication to the Kafka cluster."
+                  echo "[WARNING] - In case it is needed, please make sure you have created the kubernetes secret with the PEM certificate and"
+                  echo "[WARNING] - you have uncommented the mount of such secret in the integration tests yaml file."
+                fi
               fi
 
               # Creating the working directory
@@ -96,45 +93,45 @@ spec:
 
               python -u E2EHappyPath.py && source /tmp/E2EHappyPath.properties
 
-              echo '******************************************'
-              echo '******************************************'
-              echo '*********   Saga No Container   **********'
-              echo '******************************************'
-              echo '******************************************'
-
-              python -u Saga_NoContainer.py
-
-              echo '******************************************'
-              echo '******************************************'
-              echo '**********   Saga No Voyage   ************'
-              echo '******************************************'
-              echo '******************************************'
-
-              python -u Saga_NoVoyage.py && source /tmp/SagaNoVoyage.properties
-
-              echo '******************************************'
-              echo '******************************************'
-              echo '**********   Order Cancelled   ***********'
-              echo '******************************************'
-              echo '******************************************'
-
-              python -u OrderCancellation.py
-
-              echo '******************************************'
-              echo '******************************************'
-              echo '*********   Container Anomaly   **********'
-              echo '******************************************'
-              echo '******************************************'
-
-              python -u ContainerAnomaly.py
-
-              echo '****************************************************'
-              echo '****************************************************'
-              echo '*********   Retry and Dead Letter Queue   **********'
-              echo '****************************************************'
-              echo '****************************************************'
-
-              python -u ContainerAnomalyDlq.py
+              # echo '******************************************'
+              # echo '******************************************'
+              # echo '*********   Saga No Container   **********'
+              # echo '******************************************'
+              # echo '******************************************'
+              #
+              # python -u Saga_NoContainer.py
+              #
+              # echo '******************************************'
+              # echo '******************************************'
+              # echo '**********   Saga No Voyage   ************'
+              # echo '******************************************'
+              # echo '******************************************'
+              #
+              # python -u Saga_NoVoyage.py && source /tmp/SagaNoVoyage.properties
+              #
+              # echo '******************************************'
+              # echo '******************************************'
+              # echo '**********   Order Cancelled   ***********'
+              # echo '******************************************'
+              # echo '******************************************'
+              #
+              # python -u OrderCancellation.py
+              #
+              # echo '******************************************'
+              # echo '******************************************'
+              # echo '*********   Container Anomaly   **********'
+              # echo '******************************************'
+              # echo '******************************************'
+              #
+              # python -u ContainerAnomaly.py
+              #
+              # echo '****************************************************'
+              # echo '****************************************************'
+              # echo '*********   Retry and Dead Letter Queue   **********'
+              # echo '****************************************************'
+              # echo '****************************************************'
+              #
+              # python -u ContainerAnomalyDlq.py
 
               echo
               echo 'END RESULTS:'
