@@ -180,11 +180,11 @@ spec:
           value: "/tmp/github"
         # Github repository containing the integration tests to be executed
         - name: GITHUB_REPO
-          value: "https://github.com/osowski/refarch-kc.git"
+          value: "https://github.com/phemankita/refarch-kc.git"
           #value: "https://github.com/ibm-cloud-architecture/refarch-kc.git"
         # Specific branch for the integration tests
         - name: BRANCH
-          value: "master"
+          value: "hp-modifications"
         # Name of the repository
         - name: REPO_NAME
           value: "refarch-kc"
