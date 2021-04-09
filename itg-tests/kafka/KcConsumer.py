@@ -4,13 +4,13 @@ from confluent_kafka import Consumer, KafkaError
 
 class KafkaConsumer:
 
-    def __init__(self,kafka_brokers = "",kafka_user = "",kafka_password = "",topic_name = "",autocommit = True):
+    def __init__(self,kafka_brokers = "",kafka_user = "",kafka_password = "",security_protocol="",topic_name = "",autocommit = True):
         self.kafka_brokers = kafka_brokers
         self.kafka_user = kafka_user
         self.kafka_password = kafka_password
+        self.security_protocol = security_protocol
         self.topic_name = topic_name
         self.kafka_auto_commit = autocommit
-        self.security_protocol = os.environ['SECURITY_PROTOCOL']
 
     # See https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
     # Prepares de Consumer with specific options based on the case

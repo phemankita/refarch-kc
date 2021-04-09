@@ -36,6 +36,13 @@ except KeyError:
     print("The KAFKA_PASSWORD environment variable not set... assume local deployment")
     KAFKA_PASSWORD=''
 
+# Try to read the Kafka security protocol from the environment variables
+try:
+    SECURITY_PROTOCOL = os.environ['SECURITY_PROTOCOL']
+except KeyError:
+    print("The SECURITY_PROTOCOL environment variable not set... assume local deployment")
+    SECURITY_PROTOCOL=''
+
 # Try to read the container microservice url
 try:
     CONTAINER_SPRING_MS = os.environ['CONTAINER_SPRING_MS']
@@ -160,7 +167,7 @@ class E2EHappyPath(unittest.TestCase):
 
         print("2 - Post container event into the containers topic")
         # Create a KafkaProducer object to interact with Kafka/Event Streams
-        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD)
+        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL)
         # Verify we have a KafkaProducer object
         self.assertIsNotNone(kp)
         kp.prepareProducer("ProduceContainerPython")

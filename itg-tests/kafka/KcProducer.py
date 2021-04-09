@@ -3,11 +3,11 @@ from confluent_kafka import KafkaError, Producer
 
 class KafkaProducer:
 
-    def __init__(self,kafka_brokers = "",kafka_user = "", kafka_password = ""):
+    def __init__(self,kafka_brokers = "",kafka_user = "", kafka_password = "",security_protocol=""):
         self.kafka_brokers = kafka_brokers
         self.kafka_user = kafka_user
         self.kafka_password = kafka_password
-        self.security_protocol = os.environ['SECURITY_PROTOCOL']
+        self.security_protocol = security_protocol
 
     def prepareProducer(self,groupID = "pythonproducers"):
         options ={
