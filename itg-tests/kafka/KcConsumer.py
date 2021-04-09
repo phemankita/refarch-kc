@@ -22,7 +22,7 @@ class KafkaConsumer:
                 'enable.auto.commit': self.kafka_auto_commit,
                 'security.protocol': self.security_protocol
         }
-        if (self.kafka_security_protocol == 'SASL_SSL' or self.security_protocol == 'SASL_PLAINTEXT'):
+        if (self.security_protocol == 'SASL_SSL' or self.security_protocol == 'SASL_PLAINTEXT'):
             options['sasl.username'] = self.kafka_user
             options['sasl.password'] = self.kafka_password
             options['sasl.mechanisms'] = os.environ['SASL_MECHANISM']
