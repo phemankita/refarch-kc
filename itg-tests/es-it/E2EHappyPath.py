@@ -16,12 +16,6 @@ except KeyError:
     print("The KAFKA_BROKERS environment variable needs to be set.")
     exit(1)
 
-# Try to read the Kafka environment from the environment variables
-try:
-    KAFKA_ENV = os.environ['KAFKA_ENV']
-except KeyError:
-    KAFKA_ENV='LOCAL'
-
 # Try to read the Kafka user from the environment variables
 try:
     KAFKA_USER = os.environ['KAFKA_USER']

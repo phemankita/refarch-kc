@@ -16,12 +16,6 @@ except KeyError:
     print("The KAFKA_BROKERS environment variable needs to be set.")
     exit(1)
 
-# Try to read the Kafka environment from the environment variables
-try:
-    KAFKA_ENV = os.environ['KAFKA_ENV']
-except KeyError:
-    KAFKA_ENV='LOCAL'
-
 # Try to read the Kafka user from the environment variables
 try:
     KAFKA_USER = os.environ['KAFKA_USER']
@@ -35,6 +29,13 @@ try:
 except KeyError:
     print("The KAFKA_PASSWORD environment variable not set... assume local deployment")
     KAFKA_PASSWORD=''
+
+# Try to read the Kafka security protocol from the environment variables
+try:
+    SECURITY_PROTOCOL = os.environ['SECURITY_PROTOCOL']
+except KeyError:
+    print("The SECURITY_PROTOCOL environment variable not set... assume local deployment")
+    SECURITY_PROTOCOL=''
 
 # Try to read the container microservice url
 try:
@@ -98,9 +99,9 @@ class Dlq(unittest.TestCase):
         results_file = open("/tmp/results.txt","a")
         results_file.write('TEST CASE - ' + cls.__name__ + '\n')
         results_file.write('-----------------------------------\n')
-    
+
     def setUp(self):
-        global number_of_tests 
+        global number_of_tests
         number_of_tests += 1
         results_file.write(self.id().split('.')[2])
 
@@ -158,7 +159,7 @@ class Dlq(unittest.TestCase):
 
         print("2 - Post container event into the containers topic")
         # Create a KafkaProducer object to interact with Kafka/Event Streams
-        kp = KafkaProducer(KAFKA_ENV,KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD)
+        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL)
         # Verify we have a KafkaProducer object
         self.assertIsNotNone(kp)
         kp.prepareProducer("ProduceContainerPython")
@@ -173,7 +174,7 @@ class Dlq(unittest.TestCase):
 
         print("3 - Read container event from the containers topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_ENV,KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,CONTAINERS_TOPIC)
+        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,CONTAINERS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
@@ -255,7 +256,7 @@ class Dlq(unittest.TestCase):
 
         print("2 - Post container anomaly into the containers topic")
         # Create a KafkaProducer object to interact with Kafka/Event Streams
-        kp = KafkaProducer(KAFKA_ENV,KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD)
+        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL)
         # Verify we have a KafkaProducer object
         self.assertIsNotNone(kp)
         kp.prepareProducer("ProduceContainerPython")
@@ -330,7 +331,7 @@ class Dlq(unittest.TestCase):
 
         print("2 - Read the container anomaly retry events from the container-anomaly-retry topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_ENV,KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,CONTAINER_ANOMALY_RETRY_TOPIC)
+        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,CONTAINER_ANOMALY_RETRY_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
@@ -358,7 +359,7 @@ class Dlq(unittest.TestCase):
         # Close the Kafka/Event Streams consumer
         kc.close()
         print("Done\n")
-    
+
     def test5_containerAnomalyDead(self):
         print('-----------------------------------------')
         print('-- [TEST] : ContainerAnomalyDead Event --')
@@ -381,12 +382,12 @@ class Dlq(unittest.TestCase):
 
         print("2 - Read the container anomaly dead event from the container-anomaly-dead topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_ENV,KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,CONTAINER_ANOMALY_DEAD_TOPIC)
+        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,CONTAINER_ANOMALY_DEAD_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
         # Verify the consumer has been created
-        self.assertIsNotNone(kc.consumer)    
+        self.assertIsNotNone(kc.consumer)
         # Read next event in the topic by key
         container_anomaly_dead_event = kc.pollNextEventByKey(CONTAINER_ID)
         # Remove timestamp as it is not important for integration tests and would be hard to calculate

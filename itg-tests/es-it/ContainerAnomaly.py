@@ -16,12 +16,6 @@ except KeyError:
     print("The KAFKA_BROKERS environment variable needs to be set.")
     exit(1)
 
-# Try to read the Kafka environment from the environment variables
-try:
-    KAFKA_ENV = os.environ['KAFKA_ENV']
-except KeyError:
-    KAFKA_ENV='LOCAL'
-
 # Try to read the Kafka user from the environment variables
 try:
     KAFKA_USER = os.environ['KAFKA_USER']
@@ -35,6 +29,13 @@ try:
 except KeyError:
     print("The KAFKA_PASSWORD environment variable not set... assume local deployment")
     KAFKA_PASSWORD=''
+
+# Try to read the Kafka security protocol from the environment variables
+try:
+    SECURITY_PROTOCOL = os.environ['SECURITY_PROTOCOL']
+except KeyError:
+    print("The SECURITY_PROTOCOL environment variable not set... assume local deployment")
+    SECURITY_PROTOCOL=''
 
 # Try to read the container microservice url
 try:
@@ -94,9 +95,9 @@ class SpoilOrder(unittest.TestCase):
         results_file = open("/tmp/results.txt","a")
         results_file.write('TEST CASE - ' + cls.__name__ + '\n')
         results_file.write('-----------------------------------\n')
-    
+
     def setUp(self):
-        global number_of_tests 
+        global number_of_tests
         number_of_tests += 1
         results_file.write(self.id().split('.')[2])
 
@@ -181,7 +182,7 @@ class SpoilOrder(unittest.TestCase):
 
         print("2 - Post container anomaly into the containers topic")
         # Create a KafkaProducer object to interact with Kafka/Event Streams
-        kp = KafkaProducer(KAFKA_ENV,KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD)
+        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL)
         # Verify we have a KafkaProducer object
         self.assertIsNotNone(kp)
         kp.prepareProducer("ProduceContainerPython")
@@ -257,7 +258,7 @@ class SpoilOrder(unittest.TestCase):
 
         print("2 - Read the order spoilt event from the orders topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_ENV,KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,ORDERS_TOPIC)
+        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,ORDERS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
