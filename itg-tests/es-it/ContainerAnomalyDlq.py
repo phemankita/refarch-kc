@@ -159,7 +159,7 @@ class Dlq(unittest.TestCase):
 
         print("2 - Post container event into the containers topic")
         # Create a KafkaProducer object to interact with Kafka/Event Streams
-        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL)
+        kp = KafkaProducer()
         # Verify we have a KafkaProducer object
         self.assertIsNotNone(kp)
         kp.prepareProducer("ProduceContainerPython")
@@ -174,7 +174,7 @@ class Dlq(unittest.TestCase):
 
         print("3 - Read container event from the containers topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,CONTAINERS_TOPIC)
+        kc = KafkaConsumer(CONTAINERS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
@@ -256,7 +256,7 @@ class Dlq(unittest.TestCase):
 
         print("2 - Post container anomaly into the containers topic")
         # Create a KafkaProducer object to interact with Kafka/Event Streams
-        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL)
+        kp = KafkaProducer()
         # Verify we have a KafkaProducer object
         self.assertIsNotNone(kp)
         kp.prepareProducer("ProduceContainerPython")
@@ -331,7 +331,7 @@ class Dlq(unittest.TestCase):
 
         print("2 - Read the container anomaly retry events from the container-anomaly-retry topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,CONTAINER_ANOMALY_RETRY_TOPIC)
+        kc = KafkaConsumer(CONTAINER_ANOMALY_RETRY_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
@@ -382,7 +382,7 @@ class Dlq(unittest.TestCase):
 
         print("2 - Read the container anomaly dead event from the container-anomaly-dead topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,CONTAINER_ANOMALY_DEAD_TOPIC)
+        kc = KafkaConsumer(CONTAINER_ANOMALY_DEAD_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()

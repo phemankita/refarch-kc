@@ -182,7 +182,7 @@ class SpoilOrder(unittest.TestCase):
 
         print("2 - Post container anomaly into the containers topic")
         # Create a KafkaProducer object to interact with Kafka/Event Streams
-        kp = KafkaProducer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL)
+        kp = KafkaProducer()
         # Verify we have a KafkaProducer object
         self.assertIsNotNone(kp)
         kp.prepareProducer("ProduceContainerPython")
@@ -258,7 +258,7 @@ class SpoilOrder(unittest.TestCase):
 
         print("2 - Read the order spoilt event from the orders topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,ORDERS_TOPIC)
+        kc = KafkaConsumer(ORDERS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()

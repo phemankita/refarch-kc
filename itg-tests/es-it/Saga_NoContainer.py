@@ -162,7 +162,7 @@ class SagaNoContainer(unittest.TestCase):
 
         print("3 - Make sure a new order command event was delivered into the order-commands topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,ORDER_COMMANDS_TOPIC)
+        kc = KafkaConsumer(ORDER_COMMANDS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
@@ -205,7 +205,7 @@ class SagaNoContainer(unittest.TestCase):
 
         print("6 - Make sure a new order event was delivered into the orders topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,ORDERS_TOPIC)
+        kc = KafkaConsumer(ORDERS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
@@ -267,7 +267,7 @@ class SagaNoContainer(unittest.TestCase):
 
         print("2 - Read the ContainerNotFound event from the orders topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,ORDERS_TOPIC)
+        kc = KafkaConsumer(ORDERS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
@@ -311,7 +311,7 @@ class SagaNoContainer(unittest.TestCase):
 
         print("2 - Read OrderRejected event from the orders topic")
         # Create a KafkaConsumer object to interact with Kafka/Event Streams
-        kc = KafkaConsumer(KAFKA_BROKERS,KAFKA_USER,KAFKA_PASSWORD,SECURITY_PROTOCOL,ORDERS_TOPIC)
+        kc = KafkaConsumer(ORDERS_TOPIC)
         # Verify we have a KafkaConsumer object
         self.assertIsNotNone(kc)
         kc.prepareConsumer()
