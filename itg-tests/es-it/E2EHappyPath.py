@@ -388,127 +388,127 @@ class E2EHappyPath(unittest.TestCase):
         print("Done\n")
 
 
-    # def test4_containerAllocated(self):
-    #     print('------------------------------------')
-    #     print('--- [TEST] : Container Allocated ---')
-    #     print('------------------------------------\n')
-    #
-    #     print("1 - Load the expected container assigned to order event on the containers topic from its json files")
-    #     # Open file to read
-    #     f_container = open('../data/containerAssignedToOrderEvent.json','r')
-    #     # Load the expected container
-    #     expected_container = json.load(f_container)
-    #     # Verify we have read the files
-    #     self.assertIsNotNone(expected_container)
-    #     # Prepare expected container assigned to order event with the containerID and orderID
-    #     expected_container['containerID'] = CONTAINER_ID
-    #     expected_container['payload']['orderID'] = ORDER_ID
-    #     expected_container['payload']['containerID'] = CONTAINER_ID
-    #     print("The expected container assigned to order event is:")
-    #     print(json.dumps(expected_container, indent=4, sort_keys=True))
-    #     # Close the file
-    #     f_container.close()
-    #     print("Done\n")
-    #
-    #     print("2 - Read container assigned to order event from the containers topic")
-    #     # Create a KafkaConsumer object to interact with Kafka/Event Streams
-    #     kc = KafkaConsumer(CONTAINERS_TOPIC)
-    #     # Verify we have a KafkaConsumer object
-    #     self.assertIsNotNone(kc)
-    #     kc.prepareConsumer()
-    #     # Verify the consumer has been created
-    #     self.assertIsNotNone(kc.consumer)
-    #     # Read next event in the topic by key
-    #     container_event = kc.pollNextEventByKey(CONTAINER_ID)
-    #     # Remove timestamp as it is not important for integration tests and would be hard to calculate
-    #     container_event['timestamp'] = ""
-    #     print("This is the container assigned to order event read from the containers topic:")
-    #     print(json.dumps(container_event, indent=4, sort_keys=True))
-    #     # Close the Kafka/Event Streams consumer
-    #     kc.close()
-    #     print("Done\n")
-    #
-    #     print("3 - Verify container assigned to order event")
-    #     # Verify container assigned to order event read from the topic is as expected
-    #     self.assertEqual(sorted(expected_container.items()),sorted(container_event.items()))
-    #     print("Done\n")
-    #
-    #     print("4 - Load the expected container allocated event on the order topic from its json files")
-    #     # Open file to read
-    #     f_order = open('../data/orderContainerAllocatedEvent.json','r')
-    #     # Load the expected container allocated event
-    #     expected_container_allocated = json.load(f_order)
-    #     # Verify we have read the files
-    #     self.assertIsNotNone(expected_container_allocated)
-    #     # Prepare expected container allocated event with the appropriate orderID and containerID
-    #     expected_container_allocated['orderID'] = ORDER_ID
-    #     expected_container_allocated['payload']['orderID'] = ORDER_ID
-    #     expected_container_allocated['payload']['containerID'] = CONTAINER_ID
-    #     print("The expected container allocated event is:")
-    #     print(json.dumps(expected_container_allocated, indent=4, sort_keys=True))
-    #     # Close the file
-    #     f_order.close()
-    #     print("Done\n")
-    #
-    #     print("5 - Read container allocated event from the oder topic")
-    #     # Create a KafkaConsumer object to interact with Kafka/Event Streams
-    #     kc = KafkaConsumer(ORDERS_TOPIC)
-    #     # Verify we have a KafkaConsumer object
-    #     self.assertIsNotNone(kc)
-    #     kc.prepareConsumer()
-    #     # Verify the consumer has been created
-    #     self.assertIsNotNone(kc.consumer)
-    #     # Read next event in the topic by key
-    #     container_allocated = kc.pollNextEventByKey(ORDER_ID)
-    #     # Remove timestamp as it is not important for integrations tests and would be hard to calculate
-    #     container_allocated['timestamp'] = ""
-    #     print("This is the event read from the order topic:")
-    #     print(json.dumps(container_allocated, indent=4, sort_keys=True))
-    #     # Close the Kafka/Event Streams consumer
-    #     kc.close()
-    #     print("Done\n")
-    #
-    #     print("6 - Verify container allocated event")
-    #     # Verify container allocated event read from the topic is as expected
-    #     self.assertEqual(sorted(expected_container_allocated.items()),sorted(container_allocated.items()))
-    #     print("Done\n")
-    #
-    #     print("7 - Read container object from the container microservice's API endpoint")
-    #     response = requests.get("http://" + CONTAINER_SPRING_MS + "/containers")
-    #     # Verify we get a response
-    #     self.assertIsNotNone(response)
-    #     # Get the containers from the response
-    #     json_data = json.loads(response.text)
-    #     # Verify we get at least one container back
-    #     self.assertGreater(len(json_data['content']),0)
-    #     # Get the latest container
-    #     api_container = json_data['content'][len(json_data['content'])-1]
-    #     # For simplicity, we will not work out timestamps
-    #     api_container['createdAt'] = ""
-    #     api_container['updatedAt'] = ""
-    #     print("This is the API container object")
-    #     print(json.dumps(api_container, indent=4, sort_keys=True))
-    #     print("Done\n")
-    #
-    #     print("8 - Read expected loaded container from json file")
-    #     # Open file to read
-    #     f = open('../data/containerLoadedEvent.json','r')
-    #     # Load the expected loaded container
-    #     expected_loaded_container = json.load(f)
-    #     # Verify we have a read a container object
-    #     self.assertIsNotNone(expected_loaded_container)
-    #     # Fill in the container ID
-    #     expected_loaded_container['id'] = CONTAINER_ID
-    #     print("This is the expected container object:")
-    #     print(json.dumps(expected_loaded_container, indent=4, sort_keys=True))
-    #     # Close the file
-    #     f.close()
-    #     print("Done\n")
-    #
-    #     print("9 - Compare Containers")
-    #     # Verify the container object returned by the API endpoint is the expected container object
-    #     self.assertEqual(sorted(expected_loaded_container.items()),sorted(api_container.items()))
-    #     print("Done\n")
+    def test4_containerAllocated(self):
+        print('------------------------------------')
+        print('--- [TEST] : Container Allocated ---')
+        print('------------------------------------\n')
+
+        print("1 - Load the expected container assigned to order event on the containers topic from its json files")
+        # Open file to read
+        f_container = open('../data/containerAssignedToOrderEvent.json','r')
+        # Load the expected container
+        expected_container = json.load(f_container)
+        # Verify we have read the files
+        self.assertIsNotNone(expected_container)
+        # Prepare expected container assigned to order event with the containerID and orderID
+        expected_container['containerID'] = CONTAINER_ID
+        expected_container['payload']['orderID'] = ORDER_ID
+        expected_container['payload']['containerID'] = CONTAINER_ID
+        print("The expected container assigned to order event is:")
+        print(json.dumps(expected_container, indent=4, sort_keys=True))
+        # Close the file
+        f_container.close()
+        print("Done\n")
+
+        print("2 - Read container assigned to order event from the containers topic")
+        # Create a KafkaConsumer object to interact with Kafka/Event Streams
+        kc = KafkaConsumer(CONTAINERS_TOPIC)
+        # Verify we have a KafkaConsumer object
+        self.assertIsNotNone(kc)
+        kc.prepareConsumer()
+        # Verify the consumer has been created
+        self.assertIsNotNone(kc.consumer)
+        # Read next event in the topic by key
+        container_event = kc.pollNextEventByKey(CONTAINER_ID)
+        # Remove timestamp as it is not important for integration tests and would be hard to calculate
+        container_event['timestamp'] = ""
+        print("This is the container assigned to order event read from the containers topic:")
+        print(json.dumps(container_event, indent=4, sort_keys=True))
+        # Close the Kafka/Event Streams consumer
+        kc.close()
+        print("Done\n")
+
+        print("3 - Verify container assigned to order event")
+        # Verify container assigned to order event read from the topic is as expected
+        self.assertEqual(sorted(expected_container.items()),sorted(container_event.items()))
+        print("Done\n")
+
+        print("4 - Load the expected container allocated event on the order topic from its json files")
+        # Open file to read
+        f_order = open('../data/orderContainerAllocatedEvent.json','r')
+        # Load the expected container allocated event
+        expected_container_allocated = json.load(f_order)
+        # Verify we have read the files
+        self.assertIsNotNone(expected_container_allocated)
+        # Prepare expected container allocated event with the appropriate orderID and containerID
+        expected_container_allocated['orderID'] = ORDER_ID
+        expected_container_allocated['payload']['orderID'] = ORDER_ID
+        expected_container_allocated['payload']['containerID'] = CONTAINER_ID
+        print("The expected container allocated event is:")
+        print(json.dumps(expected_container_allocated, indent=4, sort_keys=True))
+        # Close the file
+        f_order.close()
+        print("Done\n")
+
+        print("5 - Read container allocated event from the oder topic")
+        # Create a KafkaConsumer object to interact with Kafka/Event Streams
+        kc = KafkaConsumer(ORDERS_TOPIC)
+        # Verify we have a KafkaConsumer object
+        self.assertIsNotNone(kc)
+        kc.prepareConsumer()
+        # Verify the consumer has been created
+        self.assertIsNotNone(kc.consumer)
+        # Read next event in the topic by key
+        container_allocated = kc.pollNextEventByKey(ORDER_ID)
+        # Remove timestamp as it is not important for integrations tests and would be hard to calculate
+        container_allocated['timestamp'] = ""
+        print("This is the event read from the order topic:")
+        print(json.dumps(container_allocated, indent=4, sort_keys=True))
+        # Close the Kafka/Event Streams consumer
+        kc.close()
+        print("Done\n")
+
+        print("6 - Verify container allocated event")
+        # Verify container allocated event read from the topic is as expected
+        self.assertEqual(sorted(expected_container_allocated.items()),sorted(container_allocated.items()))
+        print("Done\n")
+
+        print("7 - Read container object from the container microservice's API endpoint")
+        response = requests.get("http://" + CONTAINER_SPRING_MS + "/containers")
+        # Verify we get a response
+        self.assertIsNotNone(response)
+        # Get the containers from the response
+        json_data = json.loads(response.text)
+        # Verify we get at least one container back
+        self.assertGreater(len(json_data['content']),0)
+        # Get the latest container
+        api_container = json_data['content'][len(json_data['content'])-1]
+        # For simplicity, we will not work out timestamps
+        api_container['createdAt'] = ""
+        api_container['updatedAt'] = ""
+        print("This is the API container object")
+        print(json.dumps(api_container, indent=4, sort_keys=True))
+        print("Done\n")
+
+        print("8 - Read expected loaded container from json file")
+        # Open file to read
+        f = open('../data/containerLoadedEvent.json','r')
+        # Load the expected loaded container
+        expected_loaded_container = json.load(f)
+        # Verify we have a read a container object
+        self.assertIsNotNone(expected_loaded_container)
+        # Fill in the container ID
+        expected_loaded_container['id'] = CONTAINER_ID
+        print("This is the expected container object:")
+        print(json.dumps(expected_loaded_container, indent=4, sort_keys=True))
+        # Close the file
+        f.close()
+        print("Done\n")
+
+        print("9 - Compare Containers")
+        # Verify the container object returned by the API endpoint is the expected container object
+        self.assertEqual(sorted(expected_loaded_container.items()),sorted(api_container.items()))
+        print("Done\n")
 
     def test5_voyageAssigned(self):
         print('--------------------------------')
