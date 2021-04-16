@@ -10,10 +10,10 @@ class KafkaProducer:
         self.security_protocol = os.environ['SECURITY_PROTOCOL']
 
     def prepareProducer(self,groupID = "pythonproducers"):
-        self.kafka_brokers = os.environ['KAFKA_BROKERS']
-        self.kafka_user = os.environ['KAFKA_USER']
-        self.kafka_password = os.environ['KAFKA_PASSWORD']
-        self.security_protocol = os.environ['SECURITY_PROTOCOL']
+        # self.kafka_brokers = os.environ['KAFKA_BROKERS']
+        # self.kafka_user = os.environ['KAFKA_USER']
+        # self.kafka_password = os.environ['KAFKA_PASSWORD']
+        # self.security_protocol = os.environ['SECURITY_PROTOCOL']
         options ={
                 'bootstrap.servers':  self.kafka_brokers,
                 'group.id': groupID,

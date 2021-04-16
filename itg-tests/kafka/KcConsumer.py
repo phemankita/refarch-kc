@@ -15,10 +15,10 @@ class KafkaConsumer:
     # See https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
     # Prepares de Consumer with specific options based on the case
     def prepareConsumer(self, groupID = "pythonconsumers"):
-        self.kafka_brokers = os.environ['KAFKA_BROKERS']
-        self.kafka_user = os.environ['KAFKA_USER']
-        self.kafka_password = os.environ['KAFKA_PASSWORD']
-        self.security_protocol = os.environ['SECURITY_PROTOCOL']
+        # self.kafka_brokers = os.environ['KAFKA_BROKERS']
+        # self.kafka_user = os.environ['KAFKA_USER']
+        # self.kafka_password = os.environ['KAFKA_PASSWORD']
+        # self.security_protocol = os.environ['SECURITY_PROTOCOL']
         options ={
                 'bootstrap.servers':  self.kafka_brokers,
                 'group.id': groupID,
