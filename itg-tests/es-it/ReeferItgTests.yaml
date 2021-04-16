@@ -184,7 +184,7 @@ spec:
           #value: "https://github.com/ibm-cloud-architecture/refarch-kc.git"
         # Specific branch for the integration tests
         - name: BRANCH
-          value: "hp-modifications"
+          value: "master"
         # Name of the repository
         - name: REPO_NAME
           value: "refarch-kc"
